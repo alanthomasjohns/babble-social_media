@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .helpers import send_otp_to_phone
 from .models import User
+from .serializers import UserSerializer
 
 # Create your views here.
 
@@ -28,6 +29,7 @@ def send_otp(request):
     user = User.objects.create(
         username = data.get('username'),
         phone_number = data.get('phone_number'),
+        password = data.get('password'),
         otp = send_otp_to_phone(data.get('phone_number'))
         )
     user.set_password = data.get('set_password')
@@ -75,3 +77,37 @@ def verify_otp(request):
         'status' : 400,
         'message' : 'Invalid OTP'
     })
+
+
+
+@api_view(['POST'])
+def login_user(request):
+    data = request.data
+
+    if data.get('username') is None:
+        return Response({
+            'status' : 400,
+            'message' : 'Username is required'
+        })
+
+    if data.get('password') is None:
+        return Response({
+            'status' : 400,
+            'message' : 'Password field is required'
+        })
+
+    try:
+        user = User.objects.get(username = data.get('username'), password = data.get('password'))
+        serializer = UserSerializer(user,many=False)   
+        return Response({
+            'status' : 200,
+            'message' :'Login successful!',
+            'data' : serializer.data
+        })
+
+    except Exception as e:
+        return Response({
+            'status' : 400,
+            'message' : 'Invalid Credentials',
+            
+        })

@@ -1,6 +1,3 @@
-import uuid
-from email.policy import default
-from enum import unique
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .manager import UserManager
@@ -13,6 +10,7 @@ class User(AbstractUser):
     is_phone_verified = models.BooleanField(default = False)
     otp = models.CharField(max_length = 6)
     username = models.CharField(max_length = 14, unique = True)
+    password = models.CharField(max_length = 12)
 
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
