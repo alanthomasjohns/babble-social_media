@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from accounts.views import *
 from django.views.generic import TemplateView
+from tweets.views import *
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name = "accounts/accounts.html")),
@@ -24,6 +25,9 @@ urlpatterns = [
     path('verify_otp/', verify_otp),
     path('login/', login_user),
     path('admin/', admin.site.urls),
+    path('home/', home_view),
+    path('tweets/<int:tweet_id>', tweet_detail_view),
+    path('tweets/', tweet_list_view),
 
     path('accounts/', include('allauth.urls')),
 
